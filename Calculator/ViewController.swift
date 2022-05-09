@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     
     var displayNumber = ""
     var firstOperand = ""
-    var seconeOperand = ""
+    var secondOperand = ""
     var result = ""
     var currentOperation: Operation = .Unknown
     
@@ -41,7 +41,7 @@ class ViewController: UIViewController {
     @IBAction func tapClearButton(_ sender: UIButton) {
         self.displayNumber = ""
         self.firstOperand = ""
-        self.seconeOperand = ""
+        self.secondOperand = ""
         self.result = ""
         self.currentOperation = .Unknown
         self.numberOutputLabel.text = "0"
@@ -54,19 +54,64 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func tapDevideButton(_ sender: UIButton) {
+    @IBAction func tapDivideButton(_ sender: UIButton) {
+        self.Operation(.Divide)
     }
     
     @IBAction func tapMultiplyButton(_ sender: UIButton) {
+        self.Operation(.Multiply)
     }
     
     @IBAction func tapSubtractButton(_ sender: UIButton) {
+        self.Operation(.Subtract)
     }
     
     @IBAction func tapAddButton(_ sender: UIButton) {
+        self.Operation(.Add)
     }
     
     @IBAction func tapEqualButton(_ sender: UIButton) {
+        self.Operation(self.currentOperation)
+    }
+    
+    func Operation(_ operation: Operation) {
+        if self.currentOperation != .Unknown {
+            if !self.displayNumber.isEmpty {
+                self.secondOperand = self.displayNumber
+                self.displayNumber = ""
+                
+                guard let firstOperand = Double(self.firstOperand) else { return }
+                guard let secondOperand = Double(self.secondOperand) else { return }
+                
+                print(self.currentOperation)
+                
+                switch self.currentOperation {
+                case .Add:
+                    self.result = "\(firstOperand + secondOperand)"
+                case .Subtract:
+                    self.result = "\(firstOperand - secondOperand)"
+                case .Divide:
+                    self.result = "\(firstOperand / secondOperand)"
+                case .Multiply:
+                    self.result = "\(firstOperand * secondOperand)"
+                default:
+                    break
+                }
+                
+                if let result = Double(self.result), result.truncatingRemainder(dividingBy: 1) == 0 {
+                    self.result = "\(Int(result))"
+                }
+                
+                self.firstOperand = self.result
+                self.numberOutputLabel.text = self.result
+            }
+            
+            self.currentOperation = operation
+        } else {
+            self.firstOperand = self.displayNumber
+            self.currentOperation = operation
+            self.displayNumber = ""
+        }
     }
 }
 
